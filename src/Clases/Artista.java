@@ -44,4 +44,12 @@ public class Artista {
     public void setPaisOrigen(String paisOrigen) {
         this.paisOrigen = paisOrigen;
     }
+
+    @Override
+    public String toString() {
+        return "ID Artista: " + ID_artista +
+                "\nNombre: " + nombre
+                + "\nGenero Musical: " + generoMusical
+                + "\nPaís de Origen: " + paisOrigen;
+    }
 }

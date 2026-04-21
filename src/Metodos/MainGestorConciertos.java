@@ -1,15 +1,24 @@
 package Metodos;
 
 import Clases.Artista;
+import Clases.Concierto;
+import Clases.Entrada;
 import Metodos.Artista.AgregarArtista;
 import Metodos.Artista.EliminarArtista;
 import Metodos.Artista.ListarArtista;
 import Metodos.Concierto.AgregarConcierto;
 import Metodos.Concierto.EliminarConcierto;
 import Metodos.Concierto.ListarConcierto;
+import Metodos.Entrada.ListarEntrada;
+import Metodos.Entrada.RegistrarEntrada;
+import Metodos.fichero.GenerarResumen;
+import Metodos.fichero.Recibo;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class MainGestorConciertos {
@@ -20,11 +29,15 @@ public class MainGestorConciertos {
         String user = "ana";
         String password = "ana";
 
+        List<Artista> listaArtistas = new ArrayList<>();
+        List<Concierto> listaConciertos = new ArrayList<>();
+
         int opcion = -1;
         boolean id_valido = false;
         boolean opcion_valida = false;
         boolean id_artista_concierto_valido = false;
         boolean id_concierto_valido = false;
+        boolean id_entrada_valido = false;
 
         do {
             while (!opcion_valida) {
@@ -39,7 +52,9 @@ public class MainGestorConciertos {
                 System.out.println("----------------------");
                 System.out.println("7. Registrar Entrada.");
                 System.out.println("8. Listar Entradas.");
+                System.out.println("9. Generar recibo.");
                 System.out.println("----------------------");
+                System.out.println("10. Generar resumen Artista + Conciertos");
                 System.out.println("0. Salir.");
                 System.out.println("-----------------------");
                 System.out.print("Opción: ");
@@ -66,6 +81,7 @@ public class MainGestorConciertos {
                     String pais = sc.nextLine();
 
                     Artista artista = AgregarArtista.agregarArtista(nombre, genero, pais);
+                    listaArtistas.add(artista);
                     break;
                 case 2:
                     try(Connection conn = DriverManager.getConnection(url, user, password)){
@@ -100,7 +116,7 @@ public class MainGestorConciertos {
                     try(Connection conn = DriverManager.getConnection(url, user, password)){
                         while (!id_artista_concierto_valido) {
                             try {
-                                System.out.println("Ingresa el ID del artista a eliminar: ");
+                                System.out.println("Ingresa el ID del artista del concierto: ");
                                 int idArtistaConcierto = sc.nextInt();
                                 sc.nextLine();
 
@@ -119,7 +135,8 @@ public class MainGestorConciertos {
                                     System.out.println("Precio de la entrada: ");
                                     double precioEntrada = sc.nextDouble();
 
-                                    AgregarConcierto.agregarConcierto(idArtistaConcierto,fecha,lugar,precioEntrada);
+                                    Concierto concierto = AgregarConcierto.agregarConcierto(idArtistaConcierto,fecha,lugar,precioEntrada);
+                                    listaConciertos.add(concierto);
                                 } else {
                                     throw new Exception("Introduce un número correcto.");
                                 }
@@ -162,7 +179,6 @@ public class MainGestorConciertos {
                     ListarConcierto.listarConciertos();
                     break;
                 case 7:
-                    //TERMINAR ESTE
                     try(Connection conn = DriverManager.getConnection(url, user, password)){
                         while (!id_concierto_valido) {
                             try {
@@ -178,6 +194,14 @@ public class MainGestorConciertos {
 
                                     System.out.println("Comprador: ");
                                     String comprador = sc.nextLine();
+
+                                    System.out.println("Cantidad: ");
+                                    int cantidad = sc.nextInt();
+
+                                    java.sql.Date fechaCompra = java.sql.Date.valueOf(LocalDate.now());
+
+                                  RegistrarEntrada.registrarEntrada(idConcierto, comprador, cantidad, fechaCompra);
+
                                 } else {
                                     throw new Exception("Introduce un número correcto.");
                                 }
@@ -191,6 +215,36 @@ public class MainGestorConciertos {
                     id_concierto_valido = false;
                     break;
                 case 8:
+                    ListarEntrada.listarEntradas();
+                    break;
+                case 9:
+                    try(Connection conn = DriverManager.getConnection(url, user, password)){
+                        while (!id_entrada_valido) {
+                            try {
+                                System.out.println("Ingresa el ID de la entrada: ");
+                                int idEntrada = sc.nextInt();
+                                sc.nextLine();
+
+                                PreparedStatement comprobarID = conn.prepareStatement("SELECT id_entrada FROM entrada WHERE id_entrada = ?");
+                                comprobarID.setInt(1, idEntrada);
+                                ResultSet resultado = comprobarID.executeQuery();
+                                if (resultado.next()) {
+                                    id_entrada_valido = true;
+                                    Recibo.generarRecibo(idEntrada,"recibo.txt");
+                                } else {
+                                    throw new Exception("Introduce un número correcto.");
+                                }
+                            } catch (Exception e) {
+                                System.out.println("ID inválido --> " +e.getMessage());
+                            }
+                        }
+                    } catch (SQLException e){
+                        System.out.println("ERROR al conectarse a base de datos --> "+e.getMessage());
+                    }
+                    id_entrada_valido = false;
+                    break;
+                case 10:
+                    GenerarResumen.guardarDatos("resumen.txt", listaConciertos, listaArtistas);
                     break;
                 case 0:
                     System.out.println("Has salido.");

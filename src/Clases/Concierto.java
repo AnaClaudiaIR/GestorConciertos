@@ -54,4 +54,13 @@ public class Concierto {
     public void setPrecioEntrada(double precioEntrada) {
         this.precioEntrada = precioEntrada;
     }
+
+    @Override
+    public String toString() {
+        return "ID Concierto: " + ID_concierto
+                + "\nID Artista: " + ID_artista
+                + "\nFecha: " + fecha
+                + "\nLugar: " + lugar
+                + "\nPrecio Entrada: " + precioEntrada;
+    }
 }

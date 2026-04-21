@@ -1,10 +1,13 @@
 package Metodos.Entrada;
 
+import Clases.Entrada;
+
 import java.sql.*;
 
 public class RegistrarEntrada {
-    public static void registrarEntrada(int idConcierto, String comprador, int cantidad, String fechaCompra){
+    public static Entrada registrarEntrada(int idConcierto, String comprador, int cantidad, java.sql.Date fechaCompra){
         Connection conexion = null;
+        Entrada entrada = null;
         String url = "jdbc:oracle:thin:@localhost:1521:xe";
         String user = "ana";
         String password = "ana";
@@ -27,11 +30,12 @@ public class RegistrarEntrada {
             insertarDatos.setInt(1, id_entrada);
             insertarDatos.setString(2, comprador);
             insertarDatos.setInt(3, cantidad);
-            insertarDatos.setString(4, fechaCompra);
+            insertarDatos.setDate(4, fechaCompra);
             insertarDatos.setInt(5, idConcierto);
             insertarDatos.executeUpdate();
 
             conexion.commit();
+            entrada = new Entrada(id_entrada,idConcierto,comprador,cantidad,fechaCompra.toString());
             System.out.println("Entrada registrada correctamente.");
 
         } catch (SQLException e) {
@@ -52,5 +56,6 @@ public class RegistrarEntrada {
                 }
             }
         }
+        return entrada;
     }
 }
