@@ -15,6 +15,7 @@ public class ListarArtista {
 
             System.out.println("\n---Listado de artistas---");
 
+            //Listar artistas mientras hayan resultados
             while(rs.next()){
                 int idArtista = rs.getInt("ID_Artista");
                 String nombre = rs.getString("NOMBRE");

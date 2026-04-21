@@ -22,14 +22,17 @@ public class Recibo {
 
         try(Connection conexion = DriverManager.getConnection(url, user, password);
             Statement statement = conexion.createStatement()){
+            //Obtener datos de las tres tablas según el ID de la entrada que se haya recibido
             String listarEntradasSQL = "SELECT ID_ENTRADA, NOMBRE, FECHA, LUGAR, PRECIOENTRADA, COMPRADOR, CANTIDAD, FECHACOMPRA\n" +
                     "FROM ENTRADA JOIN CONCIERTO USING (ID_CONCIERTO)\n" +
                     "    JOIN ARTISTA USING (ID_ARTISTA)" +
                     " WHERE ID_ENTRADA = ?";
+
             PreparedStatement preparedStatement = conexion.prepareStatement(listarEntradasSQL);
             preparedStatement.setInt(1, id_entrada);
             ResultSet rs = preparedStatement.executeQuery();
 
+            //Se generan los datos si hay un resultado
             if(rs.next()){
                 ID_ENTRADA = rs.getInt("ID_ENTRADA");
                 NOMBRE = rs.getString("NOMBRE");
@@ -40,7 +43,8 @@ public class Recibo {
                 CANTIDAD = rs.getInt("CANTIDAD");
                 FECHACOMPRA = rs.getString("FECHACOMPRA");
             }
-            
+
+            //Escribir en un archivo de texto los datos --> Generar el recibo
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(recibo))){
                 bw.write("*******DATOS DE COMPRA*******");
                 bw.newLine();

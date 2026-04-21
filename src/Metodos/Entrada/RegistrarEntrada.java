@@ -5,9 +5,8 @@ import Clases.Entrada;
 import java.sql.*;
 
 public class RegistrarEntrada {
-    public static Entrada registrarEntrada(int idConcierto, String comprador, int cantidad, java.sql.Date fechaCompra){
+    public static void registrarEntrada(int idConcierto, String comprador, int cantidad, Date fechaCompra){
         Connection conexion = null;
-        Entrada entrada = null;
         String url = "jdbc:oracle:thin:@localhost:1521:xe";
         String user = "ana";
         String password = "ana";
@@ -16,6 +15,7 @@ public class RegistrarEntrada {
             conexion = DriverManager.getConnection(url, user, password);
             conexion.setAutoCommit(false);
 
+            //Generar el ID automáticamente --> Sumar 1
             PreparedStatement obtenerMaxID = conexion.prepareStatement("SELECT MAX(id_entrada) FROM Entrada");
             ResultSet rs = obtenerMaxID.executeQuery();
             int id_ent;
@@ -26,6 +26,7 @@ public class RegistrarEntrada {
             }
             int id_entrada = id_ent + 1;
 
+            //Insertar los datos en la tabla SQL
             PreparedStatement insertarDatos = conexion.prepareStatement("INSERT INTO Entrada VALUES (?, ?, ?, ?, ?)");
             insertarDatos.setInt(1, id_entrada);
             insertarDatos.setString(2, comprador);
@@ -35,7 +36,6 @@ public class RegistrarEntrada {
             insertarDatos.executeUpdate();
 
             conexion.commit();
-            entrada = new Entrada(id_entrada,idConcierto,comprador,cantidad,fechaCompra.toString());
             System.out.println("Entrada registrada correctamente.");
 
         } catch (SQLException e) {
@@ -56,6 +56,5 @@ public class RegistrarEntrada {
                 }
             }
         }
-        return entrada;
     }
 }

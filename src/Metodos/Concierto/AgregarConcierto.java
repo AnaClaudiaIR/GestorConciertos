@@ -13,6 +13,7 @@ public class AgregarConcierto {
         String user = "ana";
         String password = "ana";
         try {
+            //Obtener el último ID --> Generar el siguiente sumando 1
             conexion = DriverManager.getConnection(url, user, password);
             PreparedStatement obtenerMaxID = conexion.prepareStatement("SELECT MAX(id_concierto) FROM Concierto");
             ResultSet rs = obtenerMaxID.executeQuery();
@@ -22,8 +23,10 @@ public class AgregarConcierto {
                 id_con = rs.getInt("id_concierto");
             } else id_con = 0;
 
+            //ID del concierto generado de forma automática
             int id_concierto = id_con + 1;
 
+            //Insertar los datos en la tabla SQL
             PreparedStatement insertarDatos = conexion.prepareStatement("INSERT INTO Concierto VALUES (?, ?, ?, ?, ?)");
             insertarDatos.setInt(1, id_concierto);
             insertarDatos.setString(2, fecha);
@@ -33,6 +36,8 @@ public class AgregarConcierto {
             insertarDatos.executeUpdate();
 
             conexion.commit();
+
+            //Generar el objeto que va a retornar
             concierto = new Concierto(id_concierto, ID_artista, fecha, lugar, precioEntrada);
             System.out.println("Concierto agregado correctamente.");
 
@@ -40,6 +45,7 @@ public class AgregarConcierto {
             System.out.println("Error al agregar el Concierto --> " + e.getMessage());
             if (conexion != null) {
                 try {
+                    //Si hay un fallo hace rollback para que no se guarden los datos
                     conexion.rollback();
                 } catch (SQLException ex) {
                     System.out.println("Error al hacer rollback --> " + ex.getMessage());
@@ -48,6 +54,7 @@ public class AgregarConcierto {
     } finally {
             if (conexion != null) {
                 try {
+                    //Una vez se finalizan todas las operaciones se cierra la conexión
                     conexion.close();
                 } catch (SQLException ex) {
                     System.out.println("Error al cerrar la conexión --> " + ex.getMessage());

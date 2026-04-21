@@ -16,6 +16,7 @@ public class ListarConcierto {
 
             System.out.println("\n---Listado de Conciertos---");
 
+            //Listar los conciertos mientras haya resultados
             while(rs.next()){
                 int idConcierto = rs.getInt("ID_Concierto");
                 String fecha = rs.getString("fecha");

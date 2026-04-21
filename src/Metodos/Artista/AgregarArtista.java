@@ -16,6 +16,7 @@ public class AgregarArtista {
             conexion = DriverManager.getConnection(url, user, password);
             conexion.setAutoCommit(false);
 
+            //Obtener el último ID --> Generar el siguiente automáticamente
             PreparedStatement obtenerMaxID = conexion.prepareStatement("SELECT MAX(id_artista) FROM Artista");
             ResultSet rs = obtenerMaxID.executeQuery();
             int id_art;
@@ -34,6 +35,8 @@ public class AgregarArtista {
             insertarDatos.executeUpdate();
 
             conexion.commit();
+
+            //Crear el objeto artista que será retornado + guardar datos en la base de datos
             artista = new Artista(id_artista, nombre, generoMusical, paisOrigen);
             System.out.println("Artista agregado correctamente.");
 

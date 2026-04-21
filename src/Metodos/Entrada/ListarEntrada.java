@@ -10,6 +10,7 @@ public class ListarEntrada {
 
         try(Connection conexion = DriverManager.getConnection(url, user, password);
             Statement statement = conexion.createStatement()){
+            //Obtener datos de las tres tablas
             String listarEntradasSQL = "SELECT ID_ENTRADA, NOMBRE, FECHA, LUGAR, PRECIOENTRADA, COMPRADOR, CANTIDAD, FECHACOMPRA\n" +
                     "FROM ENTRADA JOIN CONCIERTO USING (ID_CONCIERTO)\n" +
                     "    JOIN ARTISTA USING (ID_ARTISTA)";
@@ -17,6 +18,7 @@ public class ListarEntrada {
 
             System.out.println("\n---Listado de Entradas---");
 
+            //Mientras haya resultados mostrar los datos
             while(rs.next()){
                 int ID_ENTRADA = rs.getInt("ID_ENTRADA");
                 String NOMBRE = rs.getString("NOMBRE");
@@ -38,8 +40,4 @@ public class ListarEntrada {
             System.out.println("ERROR al conectarse a la base de datos --> "+e.getMessage());
         }
     }
-    /*Listar entrada
-SELECT ID_ENTRADA, NOMBRE, FECHA, LUGAR, PRECIOENTRADA, COMPRADOR, CANTIDAD, FECHACOMPRA
-FROM ENTRADA JOIN CONCIERTO USING (ID_CONCIERTO)
-    JOIN ARTISTA USING (ID_ARTISTA);*/
 }

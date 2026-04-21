@@ -16,10 +16,12 @@ public class EliminarConcierto {
             conexion = DriverManager.getConnection(url, user, password);
             conexion.setAutoCommit(false);
 
+            //Eliminar primero de la tabla padre para evitar errores
             PreparedStatement eliminarConciertoPadre = conexion.prepareStatement("DELETE FROM Concierto WHERE id_concierto=?");
             eliminarConciertoPadre.setInt(1, id_concierto);
             eliminarConciertoPadre.executeUpdate();
 
+            //Eliminar los datos de la tabla de entrada
             PreparedStatement eliminarConcierto = conexion.prepareStatement("DELETE FROM Entrada WHERE id_concierto=?");
             eliminarConcierto.setInt(1, id_concierto);
             eliminarConcierto.executeUpdate();

@@ -29,6 +29,7 @@ public class MainGestorConciertos {
         String user = "ana";
         String password = "ana";
 
+        //Crear las listas para guardar los artistas y conciertos
         List<Artista> listaArtistas = new ArrayList<>();
         List<Concierto> listaConciertos = new ArrayList<>();
 
@@ -55,9 +56,12 @@ public class MainGestorConciertos {
                 System.out.println("9. Generar recibo.");
                 System.out.println("----------------------");
                 System.out.println("10. Generar resumen Artista + Conciertos");
+                System.out.println("11. Leer resumen Artista + Entradas");
                 System.out.println("0. Salir.");
                 System.out.println("-----------------------");
                 System.out.print("Opción: ");
+
+                //Verificar que se está introduciendo un número válido
                 try {
                     opcion = sc.nextInt();
                     sc.nextLine();
@@ -70,6 +74,7 @@ public class MainGestorConciertos {
             opcion_valida = false;
 
             switch (opcion) {
+                //Añadir artista
                 case 1:
                     System.out.println("Nombre: ");
                     String nombre = sc.nextLine();
@@ -80,9 +85,12 @@ public class MainGestorConciertos {
                     System.out.println("País origen: ");
                     String pais = sc.nextLine();
 
+                    //Crear el objeto y guardarlo en la lista, a su vez se guarda en la base de datos
                     Artista artista = AgregarArtista.agregarArtista(nombre, genero, pais);
                     listaArtistas.add(artista);
                     break;
+
+                //Eliminar artista
                 case 2:
                     try(Connection conn = DriverManager.getConnection(url, user, password)){
                         while (!id_valido) {
@@ -91,9 +99,12 @@ public class MainGestorConciertos {
                                 int  idElim = sc.nextInt();
                                 sc.nextLine();
 
+                                //Verificar que el ID es correcto
                                 PreparedStatement comprobarID = conn.prepareStatement("SELECT id_artista FROM artista WHERE id_artista = ?");
                                 comprobarID.setInt(1, idElim);
                                 ResultSet resultado = comprobarID.executeQuery();
+
+                                //Si hay un resultado, se llama al método para eliminar al artista
                                 if (resultado.next()) {
                                     id_valido = true;
                                     EliminarArtista.eliminarArtista(idElim);
@@ -109,13 +120,18 @@ public class MainGestorConciertos {
                     }
                     id_valido = false;
                     break;
+
+                //Listar artistas
                 case 3:
                     ListarArtista.listarArtistas();
                     break;
+
+                //Añadir un concierto
                 case 4:
                     try(Connection conn = DriverManager.getConnection(url, user, password)){
                         while (!id_artista_concierto_valido) {
                             try {
+                                //Comprobar que el ID del artista existe
                                 System.out.println("Ingresa el ID del artista del concierto: ");
                                 int idArtistaConcierto = sc.nextInt();
                                 sc.nextLine();
@@ -126,6 +142,7 @@ public class MainGestorConciertos {
                                 if (resultado.next()) {
                                     id_artista_concierto_valido = true;
 
+                                    //Si el ID existe, pide los datos del concierto y los introduce en la lista + la base de datos
                                     System.out.println("Fecha: ");
                                     String fecha = sc.nextLine();
 
@@ -149,6 +166,8 @@ public class MainGestorConciertos {
                     }
                     id_artista_concierto_valido = false;
                     break;
+
+                //Eliminar un concierto
                 case 5:
                     try(Connection conn = DriverManager.getConnection(url, user, password)){
                         while (!id_concierto_valido) {
@@ -157,6 +176,7 @@ public class MainGestorConciertos {
                                 int idConciertoElim = sc.nextInt();
                                 sc.nextLine();
 
+                                //Verificar que el ID existe --> Llamar al método si es correcto
                                 PreparedStatement comprobarID = conn.prepareStatement("SELECT id_concierto FROM concierto WHERE id_concierto = ?");
                                 comprobarID.setInt(1, idConciertoElim);
                                 ResultSet resultado = comprobarID.executeQuery();
@@ -175,9 +195,13 @@ public class MainGestorConciertos {
                     }
                     id_concierto_valido = false;
                     break;
+
+                //Listar conciertos
                 case 6:
                     ListarConcierto.listarConciertos();
                     break;
+
+                //Registrar una entrada
                 case 7:
                     try(Connection conn = DriverManager.getConnection(url, user, password)){
                         while (!id_concierto_valido) {
@@ -186,6 +210,7 @@ public class MainGestorConciertos {
                                 int idConcierto = sc.nextInt();
                                 sc.nextLine();
 
+                                //Verificar que el ID del concierto es correcto
                                 PreparedStatement comprobarID = conn.prepareStatement("SELECT id_concierto FROM concierto WHERE id_concierto = ?");
                                 comprobarID.setInt(1, idConcierto);
                                 ResultSet resultado = comprobarID.executeQuery();
@@ -198,6 +223,7 @@ public class MainGestorConciertos {
                                     System.out.println("Cantidad: ");
                                     int cantidad = sc.nextInt();
 
+                                    //Guardar la fecha actual como día de compra
                                     java.sql.Date fechaCompra = java.sql.Date.valueOf(LocalDate.now());
 
                                   RegistrarEntrada.registrarEntrada(idConcierto, comprador, cantidad, fechaCompra);
@@ -214,9 +240,13 @@ public class MainGestorConciertos {
                     }
                     id_concierto_valido = false;
                     break;
+
+                //Listar entradas
                 case 8:
                     ListarEntrada.listarEntradas();
                     break;
+
+                //Generar un recibo de una entrada
                 case 9:
                     try(Connection conn = DriverManager.getConnection(url, user, password)){
                         while (!id_entrada_valido) {
@@ -225,6 +255,7 @@ public class MainGestorConciertos {
                                 int idEntrada = sc.nextInt();
                                 sc.nextLine();
 
+                                //Verificar que el ID existe
                                 PreparedStatement comprobarID = conn.prepareStatement("SELECT id_entrada FROM entrada WHERE id_entrada = ?");
                                 comprobarID.setInt(1, idEntrada);
                                 ResultSet resultado = comprobarID.executeQuery();
@@ -243,14 +274,21 @@ public class MainGestorConciertos {
                     }
                     id_entrada_valido = false;
                     break;
+
+                //Guardar datos artistas + concierto
                 case 10:
-                    GenerarResumen.guardarDatos("resumen.txt", listaConciertos, listaArtistas);
+                    GenerarResumen.guardarDatos(listaConciertos, listaArtistas);
+                    break;
+
+                //Leer resumen
+                case 11:
+                    GenerarResumen.leerDatos();
                     break;
                 case 0:
                     System.out.println("Has salido.");
                     break;
                 default:
-                    System.out.println("Introduce una de las opciones (0-8).");
+                    System.out.println("Introduce una de las opciones (0-10).");
                     break;
             }
         } while (opcion != 0);

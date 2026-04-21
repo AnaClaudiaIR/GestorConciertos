@@ -15,31 +15,21 @@ public class EliminarArtista {
             conexion = DriverManager.getConnection(url, user, password);
             conexion.setAutoCommit(false);
 
+            //Eliminar primero de la tabla principal (padre)
             PreparedStatement eliminarArtistaPadre = conexion.prepareStatement("DELETE FROM Artista WHERE ID_artista = ?");
             eliminarArtistaPadre.setInt(1, ID_artista);
             eliminarArtistaPadre.executeUpdate();
 
+            //Eliminar los datos de la tabla concierto
             PreparedStatement eliminarArtista = conexion.prepareStatement("DELETE FROM CONCIERTO WHERE ID_artista = ?");
             eliminarArtista.setInt(1, ID_artista);
             eliminarArtista.executeUpdate();
 
-            /*METER ESTO EN EL MAIN
-
-            boolean id_valido = false;
-            while (id_valido) {
-                System.out.println("Ingresa el ID del artista a eliminar: ");
-                try {
-                    PreparedStatement comprobarID = conexion.prepareStatement("SELECT id_artista FROM artista WHERE id_artista = ?");
-                    comprobarID.setInt(1, ID_artista);
-                } catch (Exception e) {
-                    System.out.println("ID inválido. Introduce un número correcto.");
-                }
-            }*/
             conexion.commit();
             System.out.println("Artista eliminado correctamente.");
 
         } catch (SQLException e) {
-            System.out.println("Error al agregar artista --> " + e.getMessage());
+            System.out.println("Error al eliminar artista --> " + e.getMessage());
             if (conexion != null) {
                 try {
                     conexion.rollback();
