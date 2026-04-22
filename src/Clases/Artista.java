@@ -1,6 +1,8 @@
 package Clases;
 
-public class Artista {
+import java.io.Serializable;
+
+public class Artista implements Serializable {
     private int ID_artista;
     private String nombre;
     private String generoMusical;

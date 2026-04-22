@@ -1,13 +1,16 @@
 package Clases;
 
-public class Concierto {
+import java.io.Serializable;
+import java.util.Date;
+
+public class Concierto implements Serializable {
     private int ID_concierto;
     private int ID_artista;
-    private String fecha;
+    private java.sql.Date fecha; //Tipo de fecha que sea compatible con el "date" de SQL
     private String lugar;
     private double precioEntrada;
 
-    public Concierto(int ID_concierto, int ID_artista, String fecha, String lugar, double precioEntrada) {
+    public Concierto(int ID_concierto, int ID_artista, java.sql.Date fecha, String lugar, double precioEntrada) {
         this.ID_concierto = ID_concierto;
         this.ID_artista = ID_artista;
         this.fecha = fecha;
@@ -31,11 +34,11 @@ public class Concierto {
         this.ID_artista = ID_artista;
     }
 
-    public String getFecha() {
+    public java.sql.Date getFecha() {
         return fecha;
     }
 
-    public void setFecha(String fecha) {
+    public void setFecha(java.sql.Date fecha) {
         this.fecha = fecha;
     }
 

@@ -2,7 +2,6 @@ package Metodos;
 
 import Clases.Artista;
 import Clases.Concierto;
-import Clases.Entrada;
 import Metodos.Artista.AgregarArtista;
 import Metodos.Artista.EliminarArtista;
 import Metodos.Artista.ListarArtista;
@@ -33,6 +32,7 @@ public class MainGestorConciertos {
         List<Artista> listaArtistas = new ArrayList<>();
         List<Concierto> listaConciertos = new ArrayList<>();
 
+        //Booleans para validar
         int opcion = -1;
         boolean id_valido = false;
         boolean opcion_valida = false;
@@ -55,8 +55,8 @@ public class MainGestorConciertos {
                 System.out.println("8. Listar Entradas.");
                 System.out.println("9. Generar recibo.");
                 System.out.println("----------------------");
-                System.out.println("10. Generar resumen Artista + Conciertos");
-                System.out.println("11. Leer resumen Artista + Entradas");
+                System.out.println("10. Guardar datos: Artista + Conciertos");
+                System.out.println("11. Leer resumen: Artista + Entradas");
                 System.out.println("0. Salir.");
                 System.out.println("-----------------------");
                 System.out.print("Opción: ");
@@ -143,8 +143,8 @@ public class MainGestorConciertos {
                                     id_artista_concierto_valido = true;
 
                                     //Si el ID existe, pide los datos del concierto y los introduce en la lista + la base de datos
-                                    System.out.println("Fecha: ");
-                                    String fecha = sc.nextLine();
+                                    System.out.println("Fecha (YYYY-MM-DD): ");
+                                    java.sql.Date fecha = java.sql.Date.valueOf(sc.nextLine());
 
                                     System.out.println("Lugar: ");
                                     String lugar = sc.nextLine();
@@ -282,7 +282,8 @@ public class MainGestorConciertos {
 
                 //Leer resumen
                 case 11:
-                    GenerarResumen.leerDatos();
+                    GenerarResumen.cargarDatos(listaArtistas, listaConciertos);
+                    GenerarResumen.mostrarDatos(listaArtistas, listaConciertos);
                     break;
                 case 0:
                     System.out.println("Has salido.");

@@ -1,11 +1,10 @@
 package Metodos.Concierto;
-
 import Clases.Concierto;
 
 import java.sql.*;
 
 public class AgregarConcierto {
-    public static Concierto agregarConcierto(int ID_artista, String fecha, String lugar, double precioEntrada) {
+    public static Concierto agregarConcierto(int ID_artista, Date fecha, String lugar, double precioEntrada) {
         Connection conexion = null;
         Concierto concierto = null;
 
@@ -15,12 +14,14 @@ public class AgregarConcierto {
         try {
             //Obtener el último ID --> Generar el siguiente sumando 1
             conexion = DriverManager.getConnection(url, user, password);
+            conexion.setAutoCommit(false);
+
             PreparedStatement obtenerMaxID = conexion.prepareStatement("SELECT MAX(id_concierto) FROM Concierto");
             ResultSet rs = obtenerMaxID.executeQuery();
 
             int id_con;
             if (rs.next()){
-                id_con = rs.getInt("id_concierto");
+                id_con = rs.getInt(1);
             } else id_con = 0;
 
             //ID del concierto generado de forma automática
@@ -29,7 +30,7 @@ public class AgregarConcierto {
             //Insertar los datos en la tabla SQL
             PreparedStatement insertarDatos = conexion.prepareStatement("INSERT INTO Concierto VALUES (?, ?, ?, ?, ?)");
             insertarDatos.setInt(1, id_concierto);
-            insertarDatos.setString(2, fecha);
+            insertarDatos.setDate(2, fecha);
             insertarDatos.setString(3, lugar);
             insertarDatos.setDouble(4, precioEntrada);
             insertarDatos.setInt(5, ID_artista);
