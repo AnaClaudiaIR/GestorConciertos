@@ -10,7 +10,7 @@ public class ListarConcierto {
 
         try(Connection conexion = DriverManager.getConnection(url, user, password);
             Statement statement = conexion.createStatement()){
-            String listarConciertosSQL = "SELECT ID_CONCIERTO, FECHA, LUGAR, PRECIOENTRADA, NOMBRE\n" +
+            String listarConciertosSQL = "SELECT ID_CONCIERTO, to_char(FECHA,'DD-MM-YYYY') as FECHA, LUGAR, PRECIOENTRADA, NOMBRE\n" +
                     "FROM CONCIERTO JOIN ARTISTA USING (ID_ARTISTA)";
             ResultSet rs = statement.executeQuery(listarConciertosSQL);
 

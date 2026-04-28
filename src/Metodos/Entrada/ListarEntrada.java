@@ -11,7 +11,7 @@ public class ListarEntrada {
         try(Connection conexion = DriverManager.getConnection(url, user, password);
             Statement statement = conexion.createStatement()){
             //Obtener datos de las tres tablas
-            String listarEntradasSQL = "SELECT ID_ENTRADA, NOMBRE, FECHA, LUGAR, PRECIOENTRADA, COMPRADOR, CANTIDAD, FECHACOMPRA\n" +
+            String listarEntradasSQL = "SELECT ID_ENTRADA, NOMBRE, to_char(FECHA,'DD-MM-YYYY') as FECHA, LUGAR, PRECIOENTRADA, COMPRADOR, CANTIDAD, to_char(FECHACOMPRA,'DD-MM-YYYY') as FECHACOMPRA\n" +
                     "FROM ENTRADA JOIN CONCIERTO USING (ID_CONCIERTO)\n" +
                     "    JOIN ARTISTA USING (ID_ARTISTA)";
             ResultSet rs = statement.executeQuery(listarEntradasSQL);
